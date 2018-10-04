@@ -1,0 +1,27 @@
+#content_container {
+    width: 500px;
+    height: 300px;
+
+    overflow: auto;
+}
+
+.navigation_table td a {
+    display: block;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 60px;
+    padding-right: 60px;
+
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-family: Arial;
+
+    background-color: #00A86B;
+}
+
+
+.navigation_table td a:hover {
+    background-color: #2E8B57;
+}

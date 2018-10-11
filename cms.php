@@ -21,12 +21,22 @@
 				<tr>
 					<td><a href="cms.php?page=4">Contact</a></td>
 				</tr>
+				<tr>
+					<td><a href="cms.php?page=5">Request CV</a></td>
+				</tr>
 			</table>
 		</td>
 		<td>
 			<div id="content_container">
 			<?php
 				include 'Parsedown.php';
+
+				// Initialize Parsedown
+				$parser = new Parsedown();
+				// Safe mode escapes the html tags (ignores html tags)
+				$parser->setSafeMode(true);
+
+				$cvFile = 'cv.txt';
 
 				// Attempts to load the content file
 				function load_content($contentFile) {
@@ -47,10 +57,32 @@
 					echo $parser->text($content);
 				}
 
-				// Initialize Parsedown
-				$parser = new Parsedown();
-				// Safe mode escapes the html tags (ignores html tags)
-				$parser->setSafeMode(true);
+				// Shows a CV input form
+				function show_cv_form() {
+					// Proper way would be POST but for simplicity use GET
+					echo '
+					<form action="cms.php" method="GET">
+						<input type="hidden" name="page" value="5">
+						<label>Email:</label>
+						<input type="text" name="email">
+						<input type="submit" value="Send">
+					</form>
+					';
+				}
+
+				// Attempts to send CV to the passed address and return
+				// True if it succeed
+				function mail_CV($receiverMail) {
+					global $cvFile;
+
+					if (!is_readable($cvFile)) {
+						echo 'The CV is currently unavailabe';
+						return;
+					}
+
+					$content = file_get_contents($cvFile);
+					return mail($receiverMail, 'My CV', $content);
+				}
 
 				// If we have the page parameter we set the pageIndex to that
 				// otherwise we set it to the 'home' page
@@ -72,6 +104,27 @@
 						break;
 					case 4:
 						load_content('contact.txt');
+						break;
+					case 5:
+						// If the email is not set just show the cv form
+						if (!isset($_GET['email'])) {
+							show_cv_form();
+							break;
+						}
+
+						// Try to send the cv
+						$email = $_GET['email'];
+						if (!mail_CV($email)) {
+							// Something went wrong request the user to try
+							// again
+							'There was a problem sending the CV mail';
+							show_cv_form();
+						}
+						else {
+							// Email was sent successfully
+							'Thank you for your intrest!';
+						}
+
 						break;
 					default:
 						// If the page parameter is invalid we just show the user home page

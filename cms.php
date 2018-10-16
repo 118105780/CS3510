@@ -107,24 +107,28 @@
 						break;
 					case 5:
 						// If the email is not set just show the cv form
+						$showCVForm = false;
 						if (!isset($_GET['email'])) {
-							show_cv_form();
-							break;
-						}
-
-						// Try to send the cv
-						$email = $_GET['email'];
-						if (!mail_CV($email)) {
-							// Something went wrong request the user to try
-							// again
-							'There was a problem sending the CV mail';
-							show_cv_form();
+							$showCVForm = true;
 						}
 						else {
-							// Email was sent successfully
-							'Thank you for your intrest!';
+							$email = $_GET['email'];
+							// Try to send the cv
+							if (!mail_CV($email)) {
+								// Something went wrong request the user to try
+								// again
+								echo 'There was a problem sending the CV mail!';
+								$showCVForm = true;
+							}
+							else {
+								// Email was sent successfully
+								echo 'Thank you for your intrest!';
+							}
 						}
 
+						if ($showCVForm) {
+							show_cv_form();
+						}
 						break;
 					default:
 						// If the page parameter is invalid we just show the user home page

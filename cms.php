@@ -114,7 +114,8 @@
 						else {
 							$email = $_GET['email'];
 							// Try to send the cv
-							if (!mail_CV($email)) {
+							if (!filter_var($email, FILTER_VALIDATE_EMAIL) &&
+								!mail_CV($email)) {
 								// Something went wrong request the user to try
 								// again
 								echo 'There was a problem sending the CV mail!';

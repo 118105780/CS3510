@@ -113,7 +113,7 @@
 						}
 						else {
 							$email = $_GET['email'];
-							// Try to send the cv
+							// Validate the email and try to send the cv
 							if (!filter_var($email, FILTER_VALIDATE_EMAIL) ||
 								!mail_CV($email)) {
 								// Something went wrong request the user to try
